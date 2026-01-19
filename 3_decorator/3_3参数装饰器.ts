@@ -6,8 +6,12 @@
  * parameterIndex:参数索引
  *
  * 特别注意：
- * 参数装饰器和方法装饰器一样，propertyKey拿到的都是方法名称，只是第三个参数不同；
- * 参数装饰器拿的参数索引是参数的索引，从0开始；方法装饰器第三参数是描述符descriptor
+ * 1.参数装饰器和方法装饰器一样，propertyKey拿到的都是方法名称，只是第三个参数不同；
+ *
+ * 2.参数装饰器拿的参数索引是参数的索引，从0开始；方法装饰器第三参数是描述符descriptor
+ *
+ * 3.参数装饰器propertyKey的类型多一个undefined
+ * propertyKey: string | symbol | undefined
  *
  *
  * */
