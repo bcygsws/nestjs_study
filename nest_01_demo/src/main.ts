@@ -77,5 +77,23 @@ bootstrap();
  * 500: internal server error,服务短错误
  * 502: Bad gateway，上游接口有问题或者服务器有问题
  *
+ * 五、请求参数的装饰器
+ * @Body()
+ * @Query()
+ * @Param()
+ * @Headers()
+ * @Session()
+ * @Next() next
+ * @HttpCode() 唯一一个方法装饰器,用于手动修改请求成功后的状态码，不设置默认是200
+ *
+ * @Get(':id')
+ * @HtpCode(208)
+ * findOne(@Param('id') id: string) {
+ *
+ * }
+ *
+ * 六、session
+ * 参考文档：https://blog.csdn.net/weixin_44492275/article/details/108580395
+ * 
  *
  * */
