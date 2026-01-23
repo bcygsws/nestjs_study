@@ -31,5 +31,9 @@ export default defineConfig({
                 additionalData: `@import "@/styles/variables.scss";`
             }
         }
+    },
+    server: {
+        open: true,
+
     }
 })
