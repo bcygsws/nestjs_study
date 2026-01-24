@@ -17,15 +17,15 @@
         <el-form-item label="密码" prop="pass">
           <el-input v-model="ruleForm.pass" type="password" autocomplete="off"/>
         </el-form-item>
-        <el-form-item label="验证码" prop="captcha" class="captcha">
-          <img src="https://picsum.photos/100/40" alt=""/>
-          <el-input v-model="ruleForm.captcha" type="text" autocomplete="off" class="my-code"/>
+        <el-form-item label="验证码" prop="captcha" class="code">
+          <el-input v-model="ruleForm.code" type="text" autocomplete="off" class="my-code"/>
+          <img :src="codeUrl" alt="" @click="changeCode"/>
         </el-form-item>
         <el-form-item class="submit">
           <el-button type="primary" @click="submitForm(ruleFormRef)">
             登录
           </el-button>
-          <el-link @click="resetForm(ruleFormRef)">重置</el-link>
+          <el-link @click="resetForm(ruleFormRef)" type="danger">重置</el-link>
         </el-form-item>
       </el-form>
     </div>
@@ -35,65 +35,65 @@
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
 
-import type {FormInstance, FormRules} from 'element-plus'
-
-const ruleFormRef = ref<FormInstance>()
-
-const checkAge = (rule: any, value: any, callback: any) => {
-  if (!value) {
-    return callback(new Error('Please input the age'))
-  }
-  setTimeout(() => {
-    if (!Number.isInteger(value)) {
-      callback(new Error('Please input digits'))
-    } else {
-      if (value < 18) {
-        callback(new Error('Age must be greater than 18'))
-      } else {
-        callback()
-      }
-    }
-  }, 1000)
+import type {FormInstance, FormRules} from 'element-plus';
+import {postCode} from "@/apis";
+// 后端请求回来的验证码，只需要给出img标签src值即可，无需创建验证请求api
+const codeUrl = ref<string>('api/session/code');
+// 实现点击图片，验证码更换
+const changeCode = () => {
+  codeUrl.value = codeUrl.value + '?' + Math.random() * 10000;
 }
+
+const ruleFormRef = ref<FormInstance>();
+
+const validateUser = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入账号名'))
+  } else {
+    callback()
+  }
+};
 
 const validatePass = (rule: any, value: any, callback: any) => {
   if (value === '') {
-    callback(new Error('Please input the password'))
+    callback(new Error('请输入密码'));
   } else {
-    if (ruleForm.checkPass !== '') {
+    if (ruleForm.pass !== '') {
       if (!ruleFormRef.value) return
-      ruleFormRef.value.validateField('checkPass')
+      ruleFormRef.value.validateField('user');
     }
-    callback()
+    callback();
   }
 }
-const validatePass2 = (rule: any, value: any, callback: any) => {
+const validateCaptcha = (rule: any, value: any, callback: any) => {
   if (value === '') {
-    callback(new Error('Please input the password again'))
-  } else if (value !== ruleForm.pass) {
-    callback(new Error("Two inputs don't match!"))
+    callback(new Error('请输入验证码'))
+  } else if (value.length !== 6) {
+    callback(new Error('输入的验证码不合规，验证码为6位'));
   } else {
-    callback()
+    callback();
   }
 }
 
 const ruleForm = reactive({
   user: 'admin',
   pass: '123456',
-  captcha: '1234',
+  code: '',
 })
 
 const rules = reactive<FormRules<typeof ruleForm>>({
+  user: [{validator: validateUser, trigger: 'blur'}],
   pass: [{validator: validatePass, trigger: 'blur'}],
-  checkPass: [{validator: validatePass2, trigger: 'blur'}],
-  age: [{validator: checkAge, trigger: 'blur'}],
-})
+  code: [{validator: validateCaptcha, trigger: 'blur'}]
+});
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.validate((valid) => {
+  if (!formEl) return;
+  formEl.validate(async (valid) => {
     if (valid) {
       console.log('submit!')
+      const res = await postCode(ruleForm);
+      console.log(res);
     } else {
       console.log('error submit!')
     }
@@ -101,8 +101,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
+  if (!formEl) return;
+  formEl.resetFields();
 }
 
 </script>
@@ -114,12 +114,12 @@ const resetForm = (formEl: FormInstance | undefined) => {
   position: relative;
 
   .content {
-    width: 500px;
-    height: 280px;
+    width: 400px;
+    height: 260px;
     box-sizing: border-box;
     padding: 15px;
     border-radius: 10px;
-    background-color: #dddddd;
+    background-color: #eeeeee;
     margin: 0 auto;
     position: absolute;
     left: 50%;
@@ -133,22 +133,20 @@ const resetForm = (formEl: FormInstance | undefined) => {
     }
 
     .form {
-      .el-form-item.captcha {
+      .el-form-item.code {
 
         .el-form-item__content {
           width: 100%;
           position: relative;
 
           img {
-            width: 150px;
-            height: 30px;
-            margin-right: 20px;
+            position: absolute;
+            right: 0;
+            margin-left: 10px;
           }
 
           .el-input.my-code {
-            width: calc(100% - 170px);
-            position: absolute;
-            right: 0;
+            width: calc(100% - 150px);
           }
         }
       }
