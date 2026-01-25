@@ -14,7 +14,7 @@ export class SessionController {
             noise: 1,
             fontSize: 50,
             width: 140,
-            height: 40,
+            height: 36,
             ignoreChars: '0o1i', // filter out some characters like 0o1i
             color: true, // 验证码的字符是否有颜色，默认没有，如果设定了背景，则默认有
             // background: '#cc9966' // background color of the svg image
@@ -30,8 +30,14 @@ export class SessionController {
     @Post('code')
     create(@Body() body: any, @Req() req) {
         console.log(`body===`, body);
-        // 特别注意：前端axios创建$http请求对象时，create方法中，withCredentials: true，
-        // 否则此处无法获取session的captchaCode数据，值为undefined
+        /**
+         * @bug记录：
+         * 参考：https://blog.csdn.net/m0_66583360/article/details/130569715
+         * 特别注意：前端axios创建$http请求对象时，create方法中，withCredentials: true，
+         * 否则此处无法获取session的captchaCode数据，值为undefined
+         *
+         *
+         * */
         console.log(`req.session.captchaCode===`, req.session.captchaCode);
         if (req.session.captchaCode?.toLowerCase() === body.code.toLowerCase()) {
             return {

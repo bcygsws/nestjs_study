@@ -17,7 +17,7 @@
         <el-form-item label="密码" prop="pass">
           <el-input v-model="ruleForm.pass" type="password" autocomplete="off"/>
         </el-form-item>
-        <el-form-item label="验证码" prop="captcha" class="code">
+        <el-form-item label="验证码" prop="code" class="code">
           <el-input v-model="ruleForm.code" type="text" autocomplete="off" class="my-code"/>
           <img :src="codeUrl" alt="" @click="changeCode"/>
         </el-form-item>
@@ -68,7 +68,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
 const validateCaptcha = (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入验证码'))
-  } else if (value.length !== 6) {
+  } else if (value.length !== 4) {
     callback(new Error('输入的验证码不合规，验证码为6位'));
   } else {
     callback();
@@ -93,7 +93,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       console.log('submit!')
       const res = await postCode(ruleForm);
-      console.log(res);
+      console.log(res.data);
     } else {
       console.log('error submit!')
     }

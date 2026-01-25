@@ -38,6 +38,7 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:3000',
                 changeOrigin: true,
+                // 完整路径中/api用''代替，即去掉了路径中的/api
                 rewrite: (path) => path.replace(/^\/api/, '')
             }
         }
