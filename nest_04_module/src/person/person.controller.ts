@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PersonService } from './person.service';
-import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
+import {Controller, Get, Post, Body, Patch, Param, Delete, Inject} from '@nestjs/common';
+import {PersonService} from './person.service';
+import {CreatePersonDto} from './dto/create-person.dto';
+import {UpdatePersonDto} from './dto/update-person.dto';
 
 @Controller('person')
 export class PersonController {
-  constructor(private readonly personService: PersonService) {}
+    constructor(private readonly personService: PersonService,
+                @Inject('USE_BASE') private readonly val: string) {
+    }
 
-  @Post()
-  create(@Body() createPersonDto: CreatePersonDto) {
-    return this.personService.create(createPersonDto);
-  }
+    @Post()
+    create(@Body() createPersonDto: CreatePersonDto) {
+        return this.personService.create(createPersonDto);
+    }
 
-  @Get()
-  findAll() {
-    return this.personService.findAll();
-  }
+    @Get()
+    findAll() {
+        return this.personService.findAll() + JSON.stringify(this.val);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.personService.findOne(+id);
-  }
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.personService.findOne(+id);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.personService.update(+id, updatePersonDto);
-  }
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
+        return this.personService.update(+id, updatePersonDto);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.personService.remove(+id);
-  }
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.personService.remove(+id);
+    }
 }
