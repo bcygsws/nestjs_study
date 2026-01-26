@@ -10,8 +10,8 @@ export class SessionController {
     @Get('code')
     findAll(@Req() req, @Res() res) {
         let captcha = SvgCaptcha.create({
-            size: 4,
-            noise: 1,
+            size: 4,// 验证码字符长度
+            noise: 1,// 干扰线的个数
             fontSize: 50,
             width: 140,
             height: 36,
