@@ -4,6 +4,7 @@ import {NestExpressApplication} from "@nestjs/platform-express";
 import {join} from "path";
 
 async function bootstrap() {
+    // 泛型NestExpressApplication是后加的，使得app.useStaticAssets()方法有提示
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
     // 设置静态访问目录，两个参数：path,options
     // 此时，托管在根目录静态路径下，图片的路径直接就是join(__dirname, 'images'),无需要在向上../切换一级
@@ -23,6 +24,12 @@ bootstrap();
  *
  * 2.在upload.module.ts中,添加MultipartModule.register({})
  * 指定临时存放图片文件的目录和文件名
+ *
+ * 3.托管在静态目录下，在根目录中直接访问
+ * a.对app的创建过程中，指定泛型约束
+ * const app = await NestFactory.create<NestExpressApplication>(AppModule);
+ * b.在app.useStaticAssets()方法中，指定静态目录和访问前缀
+ *
  *
  *
  * */
