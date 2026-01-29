@@ -44,11 +44,11 @@ export class DownloadController {
     // 第二种方式：使用compressing包压缩后下载
     // 1.装包compressing:npm i compressing -S
     // 2.新建vite前端项目nest_08_front
-
+    // 3.todo:stream get请求中，如何实时获取上传的图片生成的零时文件名，是存入数据库，再次数据库取图片吗？
 
     @Get('stream')
     async getSteam(@Res() res: Response) {
-        const url = join(__dirname, '../images/1769646533016.png');
+        const url = join(__dirname, '../images/1769720523349.jpg');
         const tarStream = new zip.Stream();
         await tarStream.addEntry(url);// 配置流的url
         res.setHeader('Content-Type', 'application/octet-stream');

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^1.13.4",
+    "element-plus": "^2.13.1",
     "sass": "^1.78.0",
     "vue": "^3.5.24",
     "vue-router": "^4.6.4"
@@ -19,6 +20,8 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "typescript": "~5.9.3",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-vue-components": "^31.0.0",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"
   }

@@ -8,14 +8,14 @@
     <h3>Home</h3>
     <!--下载图片-->
     <div class="content">
-      <button>上传</button>
-      <button @click="useFetch">下载</button>
+      <UploadFile/>
+      <el-button @click="useFetch" type="success" plain>下载</el-button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import $http from "@/utils/http.ts";
 import {getCompressSteam} from "@/apis";
+import UploadFile from "@/components/UploadFile.vue";
 
 const useFetch = async () => {
   const res = await getCompressSteam();
@@ -41,7 +41,7 @@ const useFetch = async () => {
 .home-container {
   .content {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
 
