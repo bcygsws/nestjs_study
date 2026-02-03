@@ -7,7 +7,7 @@ import {ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} f
 
 @Controller('user')
 @UseGuards(RoleGuard)
-@ApiTags('守卫')// 添加一套接口的名字，用以分组
+@ApiTags('守卫')// 将一个CRUD系列接口归类，用以分组
 @ApiBearerAuth() // 需要token才能访问接口
 export class UserController {
     constructor(private readonly userService: UserService) {
