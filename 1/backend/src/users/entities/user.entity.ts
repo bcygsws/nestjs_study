@@ -14,7 +14,7 @@ export class User {
   @Column({ length: 50 })
   name: string;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100, unique: true })// 邮箱地址的唯一
   email: string;
 
   @Column({ length: 20, nullable: true })
