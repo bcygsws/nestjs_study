@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
-    <MyTable msg="Vite + Vue"/>
-
+    <MyTable/>
   </div>
 </template>
 <script setup lang="ts">
