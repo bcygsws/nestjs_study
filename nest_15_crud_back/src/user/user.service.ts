@@ -10,8 +10,11 @@ export class UserService {
     constructor(@InjectRepository(User) private user: Repository<User>) {
     }
 
-    async create(createUserDto: CreateUserDto) {
-        const usr = await this.user.create(createUserDto);
+    create(createUserDto: CreateUserDto) {
+        console.log(createUserDto);
+        createUserDto.createdAt = new Date(createUserDto.createdAt);
+
+        const usr = this.user.create(createUserDto);
         return this.user.save(usr);
     }
 
@@ -36,7 +39,7 @@ export class UserService {
         };
     }
 
-    findOne(id: number): Promise<User> {
+    findOne(id: number): Promise<User| null> {
         const usr= this.user.findOneBy({id});
         if (!usr){
             throw new NotFoundException(`用户ID为${id}的用户不存在`)
@@ -49,6 +52,9 @@ export class UserService {
         // return this.user.update(id, updateUserDto);
         // 方式二：先根据id查询数据，再进行更新
         const usr = await this.findOne(id);
+        if (!usr){
+            throw new NotFoundException(`用户ID为${id}的用户不存在`)
+        }
         Object.assign(usr, updateUserDto);
         return this.user.save(usr);
 

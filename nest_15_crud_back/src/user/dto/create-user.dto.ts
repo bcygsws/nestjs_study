@@ -10,6 +10,6 @@ export class CreateUserDto {
     desc?: string;
 
     @IsOptional()
-    createdAt?: number | Date;
+    createdAt?: any;
 
 }
