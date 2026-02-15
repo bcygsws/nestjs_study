@@ -211,7 +211,7 @@ const handleConfirm = async () => {
     // 添加数据
     console.log(`添加数据`);
     // 转换为时间戳的5种方式：Date.now() new Date(['']).getTime()
-    // Number((new Date()))、new Date().valueOf() +new Date()
+    // Number((new Date()))、new Date().valueOf()、 +new Date()
     Object.assign(form, {createdAt: Date.now(), name: form.name, desc: form.desc});
     // 测试代码
     console.log(`form==`, form);

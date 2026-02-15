@@ -12,6 +12,7 @@ export class UserService {
 
     create(createUserDto: CreateUserDto) {
         console.log(createUserDto);
+        // 特别注意：时间戳为13位，直接new Date(timestamp);时间戳为10位，需要*1000，new Date(timestamp*1000)
         createUserDto.createdAt = new Date(createUserDto.createdAt);
 
         const usr = this.user.create(createUserDto);
