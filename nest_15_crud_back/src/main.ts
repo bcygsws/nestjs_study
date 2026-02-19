@@ -20,3 +20,23 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+
+/**
+ * @Desc:Typeorm中文文档
+ * 参考：https://typeorm.bootcss.com/tree-entities
+ * @Author: bao Chengyi
+ *
+ * 树形实体： Closure Table ---闭包表和adjacency List---邻接表
+ * 参考：https://cloud.tencent.com/developer/article/1016609
+ * 闭包表
+ * 优点：在处理树形结构的关系时，很方便
+ * 缺点：数据存储量大，索引表需要空间大，添加或者删除数据是，操作麻烦
+ * 使用场景：
+ * 适用于树形结构深度不大，增删操作不频繁的场景
+ *
+ *
+ *
+ *
+ *
+ * */
