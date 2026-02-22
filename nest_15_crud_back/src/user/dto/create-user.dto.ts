@@ -6,7 +6,7 @@ export class CreateUserDto {
     name: string;
 
     @IsString()
-    @Length(0, 128, {message: '描述长度在0-128之间'})
+    @Length(0, 255, {message: '描述长度在0-128之间'})
     desc?: string;
 
     @IsOptional()

@@ -13,7 +13,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
             envFilePath: '.env',
         }),
         TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
+            // imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: any) => ({
                 type: configService.get('DB_TYPE'),

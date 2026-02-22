@@ -10,7 +10,7 @@ export class UserController {
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
-        console.log('createUserDto===', typeof createUserDto.createdAt)
+        console.log('createUserDto===', typeof createUserDto.createdAt);
         return this.userService.create(createUserDto);
     }
     // 查询参数，使用@Query()装饰器
