@@ -12,11 +12,19 @@ export class UserService {
 
     create(createUserDto: CreateUserDto) {
         console.log(createUserDto);
-        // 特别注意：时间戳为13位，直接new Date(timestamp);时间戳为10位，需要*1000，new Date(timestamp*1000)
-        createUserDto.createdAt = new Date(createUserDto.createdAt);
+        try {
+            // 特别注意：时间戳为13位，直接new Date(timestamp);时间戳为10位，需要*1000，new Date(timestamp*1000)
+            if (createUserDto.createdAt) {
+                createUserDto.createdAt.toString().length === 13 ?
+                    createUserDto.createdAt = new Date(createUserDto.createdAt) :
+                    createUserDto.createdAt = new Date(createUserDto.createdAt * 1000);
+            }
+            const usr = this.user.create(createUserDto);
+            return this.user.save(usr);
+        } catch (e) {
+            throw new NotFoundException(e.message);
+        }
 
-        const usr = this.user.create(createUserDto);
-        return this.user.save(usr);
     }
 
     async findAll(page: number = 1, limit: number = 10, search?: string) {
@@ -40,9 +48,9 @@ export class UserService {
         };
     }
 
-    findOne(id: number): Promise<User| null> {
-        const usr= this.user.findOneBy({id});
-        if (!usr){
+    findOne(id: number): Promise<User | null> {
+        const usr = this.user.findOneBy({id});
+        if (!usr) {
             throw new NotFoundException(`用户ID为${id}的用户不存在`)
         }
         return usr;
@@ -53,7 +61,7 @@ export class UserService {
         // return this.user.update(id, updateUserDto);
         // 方式二：先根据id查询数据，再进行更新
         const usr = await this.findOne(id);
-        if (!usr){
+        if (!usr) {
             throw new NotFoundException(`用户ID为${id}的用户不存在`)
         }
         Object.assign(usr, updateUserDto);
