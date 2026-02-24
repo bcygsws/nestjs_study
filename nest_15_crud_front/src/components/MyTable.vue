@@ -79,23 +79,24 @@
     </div>
   </div>
   <!--添加和修改数据对话框-->
-  <el-dialog v-model="dialogFormVisible" :title="flag?'添加':'修改'" width="500">
+  <el-dialog v-model="dialogFormVisible" :title="flag?'添加':'修改'" width="480">
     <el-form
         :model="form"
-        :rules="rules"
         ref="ruleFormRef"
+        label-width="auto"
+        :rules="rules"
     >
-      <el-form-item label="用户" :label-width="formLabelWidth">
+      <el-form-item label="用户" prop="name">
         <el-input v-model="form.name" autocomplete="off"/>
       </el-form-item>
-      <el-form-item label="简介" :label-width="formLabelWidth">
+      <el-form-item label="简介" prop="desc">
         <el-input v-model="form.desc" type="textarea"/>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleConfirm">
+        <el-button type="primary" @click="handleConfirm(ruleFormRef)">
           确认
         </el-button>
       </div>
@@ -134,7 +135,7 @@ import {Search} from '@element-plus/icons-vue'
 import type {IParam, User} from "@/type";
 import {addUserApi, deleteUserApi, getUserListApi, updateUserApi} from "@/apis";
 import {dateFormat} from "../utils/format.ts";
-import type {FormInstance} from "element-plus";
+import type {FormInstance, FormRules} from "element-plus";
 // 特别注意：按需引入组件时，必须注视掉该语句，否则ElMessage将会失效
 // import {ElMessage} from "element-plus";
 
@@ -142,7 +143,6 @@ import type {FormInstance} from "element-plus";
 let dialogFormVisible = ref(false);
 // 控制删除对话框的显示或者隐藏状态
 let delVisible = ref(false);
-const formLabelWidth = '48px';
 // flag状态量：true为添加，false为修改
 const flag = ref(true);
 
@@ -156,25 +156,11 @@ const form = reactive<User>({
 
 // 对话框表单校验
 const ruleFormRef = ref<FormInstance>();
-
-// 校验规则
-const rules = {
-  name: [
-    {required: true, message: '请输入用户名', trigger: 'blur'},
-    {min: 2, max: 10, message: '长度在 4 到 20 个字符', trigger: 'blur'}
-  ],
-  desc: [
-      {required: true, message: '请输入描述信息', trigger: 'blur'},
-      {min: 1, max: 500, message: '长度在 1 到 255 个字符', trigger: 'blur'}
-  ]
-}
-
-
 /**
  * @Desc:表格页面打开获取到数据
  *
  * */
-// 文本框输入内容
+// 存放输入的检索关键字
 const input = ref('');
 // 表格数据源
 const tableData = ref<User[]>([]);
@@ -187,6 +173,18 @@ const param = reactive<IParam>({
   total: 0,// 总数
   createdAt: Date.now()// 时间戳
 })
+
+// 校验规则
+const rules = reactive<FormRules<User>>({
+  name: [
+    {required: true, message: '请输入用户名', trigger: 'blur'},
+    {min: 2, max: 20, message: '字符长度在2~20之间', trigger: 'blur'},
+  ],
+  desc: [
+    {required: true, message: '请输入描述性文字', trigger: 'blur'},
+    {min: 1, max: 255, message: '字符长度在2~20之间', trigger: 'blur'},
+  ],
+});
 
 const getList = async (val: IParam) => {
   const res = await getUserListApi(val);
@@ -234,58 +232,70 @@ const handleAdd = () => {
  * handleConfirm()
  *
  * */
-const handleConfirm = async () => {
-  // 关闭对话框
-  dialogFormVisible.value = false;
-  if (flag.value) {
-    // 添加数据
-    console.log(`添加数据`);
-    // 转换为时间戳的5种方式：Date.now() new Date(['']).getTime()
-    // Number((new Date()))、new Date().valueOf()、 +new Date()
-    Object.assign(form, {createdAt: Date.now(), name: form.name, desc: form.desc});
-    // 测试代码
-    console.log(`form==`, form);
-    // console.log(`form==`, typeof form.createdAt);// number
-    const res = await addUserApi(form);
-    console.log(`res==`, res);
-    console.log(`res.status==`, res.status);
-    if (res.status === 201) {
+const handleConfirm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid) => {
+    console.log(`valid===`, valid);
+    if (valid) {// 表单校验成功
+      // 关闭对话框
+      dialogFormVisible.value = false;
+      if (flag.value) {
+        // 添加数据
+        console.log(`添加数据`);
+        // 转换为时间戳的5种方式：Date.now() new Date(['']).getTime()
+        // Number((new Date()))、new Date().valueOf()、 +new Date()
+        Object.assign(form, {createdAt: Date.now(), name: form.name, desc: form.desc});
+        // 测试代码
+        console.log(`form==`, form);
+        // console.log(`form==`, typeof form.createdAt);// number
+        const res = await addUserApi(form);
+        console.log(`res==`, res);
+        console.log(`res.status==`, res.status);
+        if (res.status === 201) {// 添加数据status 201
+          ElMessage({
+            showClose: true,
+            message: '成功添加一条记录',
+            type: 'success'
+          });
+          // 重新刷新页面
+          await getList(param);
+          resetForm();// 重置表单
+        } else {
+          ElMessage({
+            showClose: true,
+            message: '添加数据失败',
+            type: 'error'
+          });
+          resetForm();
+        }
+
+      } else {// 修改数据
+        const res = await updateUserApi(form);
+        console.log(`res==`, res);
+        if (res.status === 200) {// 更改数据status 200
+          ElMessage({
+            showClose: true,
+            message: '修改成功',
+            type: 'success'
+          });
+          await getList(param);
+        } else {
+          ElMessage({
+            showClose: true,
+            message: '修改数据失败',
+            type: 'error'
+          });
+        }
+
+      }
+    } else {// 表单校验失败
       ElMessage({
         showClose: true,
-        message: '成功添加一条记录',
-        type: 'success'
-      });
-      // 重新刷新页面
-      await getList(param);
-      resetForm();// 重置表单
-    } else {
-      ElMessage({
-        showClose: true,
-        message: '添加数据失败',
+        message: '请输入符合格式的数据',
         type: 'error'
       });
-      resetForm();
     }
-
-  } else {// 修改数据
-    const res = await updateUserApi(form);
-    console.log(`res==`, res);
-    if (res.status === 200) {
-      ElMessage({
-        showClose: true,
-        message: '修改成功',
-        type: 'success'
-      });
-      await getList(param);
-    } else {
-      ElMessage({
-        showClose: true,
-        message: '修改数据失败',
-        type: 'error'
-      });
-    }
-
-  }
+  });
 
 }
 
@@ -362,20 +372,9 @@ const handleDelConfirm = async () => {
 
 }
 
-// const submitForm = async (formEl: FormInstance | undefined) => {
-//   if (!formEl) return
-//   await formEl.validate((valid, fields) => {
-//     if (valid) {
-//       console.log('submit!')
-//     } else {
-//       console.log('error submit!', fields)
-//     }
-//   })
-// }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields()
+const resetForm = () => {
+  Object.assign(form, {name: '', desc: '', createdAt: new Date()});
 }
 
 // 重置添加或者修改对话框表单内容

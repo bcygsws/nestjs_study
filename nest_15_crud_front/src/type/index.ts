@@ -7,7 +7,7 @@ export interface User {
     id?: string
     name: string
     desc: string
-    createdAt: Date
+    createdAt?: Date
 }
 
 export interface IParam {
