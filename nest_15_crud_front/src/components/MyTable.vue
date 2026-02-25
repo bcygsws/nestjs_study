@@ -4,7 +4,7 @@
       <el-input
           v-model="input"
           style="max-width: 600px"
-          placeholder="请输入查询内容"
+          placeholder="请输入检索关键字"
           class="input-with-select"
       >
         <template #append>
@@ -125,9 +125,8 @@
 <script setup lang="ts">
 /**
  * @Desc:优化
- * 1.todos: 两个对话框的表单校验
- *
- *
+ * 1.todos: 两个对话框的表单校验，el-form中的rules属性，配合el-form-item中的prop实现
+ * 2.el-form中标签宽度，可以统一使用label-width声明
  *
  * */
 import {onMounted, reactive, ref} from 'vue'
@@ -198,7 +197,7 @@ const getList = async (val: IParam) => {
       showClose: true,
       message: '出现错误，未请求到数据',
       type: 'error'
-    })
+    });
   }
 }
 onMounted(() => {
@@ -274,6 +273,7 @@ const handleConfirm = async (formEl: FormInstance | undefined) => {
         console.log(`res==`, res);
         if (res.status === 200) {// 更改数据status 200
           ElMessage({
+
             showClose: true,
             message: '修改成功',
             type: 'success'

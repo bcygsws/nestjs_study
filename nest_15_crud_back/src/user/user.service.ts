@@ -1,9 +1,10 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {HttpException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Like, Repository} from "typeorm";
 import {User} from "./entities/user.entity";
+import {Types} from "mysql2";
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,7 @@ export class UserService {
             const usr = this.user.create(createUserDto);
             return this.user.save(usr);
         } catch (e) {
-            throw new NotFoundException(e.message);
+            throw new HttpException(e.message, 500);
         }
 
     }
