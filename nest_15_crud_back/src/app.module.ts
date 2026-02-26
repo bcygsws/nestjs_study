@@ -10,7 +10,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
         UserModule,
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: '.env',
+            envFilePath: '.env',// 环境变量文件的路径：放在了根路径
         }),
         TypeOrmModule.forRootAsync({
             // imports: [ConfigModule],
