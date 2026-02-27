@@ -39,4 +39,15 @@ bootstrap();
  *
  *
  *
+ * 三、查询构建器QueryBuilder
+ * 3.1 having子句的用法，在查询中涉及到了聚合函数，比如count、max、min、avg、sum等，
+ *  having子句用于过滤聚合函数的结果
+ *  having子句,参考：https://www.runoob.com/sql/sql-having.html
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  * */
