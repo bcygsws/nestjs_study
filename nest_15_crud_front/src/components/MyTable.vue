@@ -318,6 +318,9 @@ const handleCancel = () => {
 /**
  * @Desc:点击编辑按钮，弹出对话框
  * handleEdit()
+ * 作用于插槽
+ * scope.$index 索引值
+ * scope.row 当前行的数据对象
  *
  *
  * */
